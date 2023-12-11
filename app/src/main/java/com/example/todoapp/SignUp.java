@@ -48,9 +48,11 @@ public class SignUp extends AppCompatActivity {
                 String pass = signupPassword.getText().toString();
 
                 // Field validation
+                // "^.{2,15}$" regex simply counts the letters
                 if(!Pattern.compile("^.{2,15}$").matcher(name).matches()){
                     Toast.makeText(SignUp.this, "Name length must be between 2-15", Toast.LENGTH_SHORT).show();
                 }
+                // the following regex makes sure there exists a @ and a . for the email
                 else if(!Pattern.compile(".*@.*\\..*").matcher(email).matches()){
                     Toast.makeText(SignUp.this, "Please enter a valid email", Toast.LENGTH_SHORT).show();
                 }
@@ -59,6 +61,7 @@ public class SignUp extends AppCompatActivity {
                 }
                 else if(!Pattern.compile("^.{2,15}$").matcher(pass).matches()){
                     Toast.makeText(SignUp.this, "Password length must be between 2-15", Toast.LENGTH_SHORT).show();
+                // the following regex makes sure there exists a capital letter and a special char for passwords
                 } else if(!Pattern.compile("^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\",.<>/?]).*$").matcher(pass).matches()){
                     Toast.makeText(SignUp.this, "Password must contain a capital letter and one special char", Toast.LENGTH_SHORT).show();
                 }
