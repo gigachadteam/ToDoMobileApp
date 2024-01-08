@@ -1,14 +1,19 @@
 package com.example.todoapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.FirebaseApp;
 
 import java.util.ArrayList;
@@ -52,6 +57,30 @@ public class MainActivity extends AppCompatActivity {
                     // Clear the EditText after adding the task
                     editTextTask.setText("");
                 }
+            }
+        });
+
+        // Bottom nav code
+        BottomNavigationView nav = findViewById(R.id.nav1);
+        nav.getMenu().findItem(R.id.tasks).setChecked(true);
+        nav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+                if(id == R.id.home){
+                    Intent intent = new Intent(MainActivity.this, Home.class);
+                    startActivity(intent);
+                }
+                else if (id == R.id.tasks){
+                    Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
+                else if (id == R.id.profile){
+                    Intent intent = new Intent(MainActivity.this, Profile.class);
+                    startActivity(intent);
+                }
+
+                return true;
             }
         });
     }
