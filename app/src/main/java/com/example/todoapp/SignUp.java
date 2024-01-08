@@ -11,13 +11,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +30,8 @@ public class SignUp extends AppCompatActivity {
     TextView loginRedirect;
     Button signupButton;
     EditText signupName, signupPassword, signupEmail, signupUsername;
-    FirebaseFirestore firestore;
+    private boolean isExist;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,34 +85,59 @@ public class SignUp extends AppCompatActivity {
                     return;
                 }
 
-//                firestore = FirebaseFirestore.getInstance();
-
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
-                // Create a new user with a first and last name
-                Map<String, Object> userData = new HashMap<>();
-                userData.put("name", name);
-                userData.put("email", email);
-                userData.put("username", user);
-                userData.put("password", pass);
 
+                // check if exists
                 db.collection("users")
-                        .add(userData)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
 
-                                Toast.makeText(getApplicationContext(), "Failuer", Toast.LENGTH_LONG).show();
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        String userName = document.getString("name");
+                                        String userEmail= document.getString("email");
+                                        if (userName.equals(user) || userEmail.equals(email)) {
+                                            Toast.makeText(SignUp.this,"user exists",Toast.LENGTH_SHORT).show();
+                                            SignUp.this.isExist = true;
+                                            return;
+                                        }else{
+
+                                            // Create a new user with a first and last name
+                                            Map<String, Object> userData = new HashMap<>();
+                                            userData.put("name", name);
+                                            userData.put("email", email);
+                                            userData.put("username", user);
+                                            userData.put("password", pass);
+
+                                            db.collection("users")
+                                                    .add(userData)
+                                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                        @Override
+                                                        public void onSuccess(DocumentReference documentReference) {
+                                                            Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+
+                                                            Toast.makeText(getApplicationContext(), "Failuer", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    });
+
+                                            Intent intent = new Intent(SignUp.this, MainActivity.class);
+                                            startActivity(intent);
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(SignUp.this,"something went wrong",Toast.LENGTH_SHORT).show();
+                                }
                             }
                         });
 
-                Intent intent = new Intent(SignUp.this, MainActivity.class);
-                startActivity(intent);
             }
         });
     }

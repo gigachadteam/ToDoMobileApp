@@ -17,6 +17,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Login extends AppCompatActivity {
     EditText loginUsername, loginPassword;
     Button loginButton;
@@ -35,19 +38,17 @@ public class Login extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 db.collection("users")
                         .get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
                                 if (task.isSuccessful()) {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
                                         String userName = document.getString("name");
-                                        if (userName != null && userName.equals(loginUsername.getText().toString())) {
+                                        String userPassword = document.getString("password");
+                                        if (userName != null && userPassword != null && userName.equals(loginUsername.getText().toString()) && userPassword.equals((loginPassword.getText().toString()))) {
                                             Intent intent = new Intent(Login.this, MainActivity.class);
                                             startActivity(intent);
                                             Toast.makeText(Login.this,"LOGIN SUCESSED",Toast.LENGTH_SHORT).show();
@@ -58,32 +59,8 @@ public class Login extends AppCompatActivity {
                                 } else {
                                     Toast.makeText(Login.this,"something went wrong",Toast.LENGTH_SHORT).show();
                                 }
-
-
-
-
-
-//                                if (task.isSuccessful()) {
-//                                    for (QueryDocumentSnapshot document : task.getResult()) {
-
-//                                        Log.d(TAG, document.getId() + " => " + document.getData());
-//                                    }
-//                                } else {
-//                                    Log.w(TAG, "Error getting documents.", task.getException());
-//                                }
                             }
                         });
-
-
-
-//                if(loginUsername.getText().toString().equals("admin")&& loginPassword.getText().toString().equals("admin")){
-//                    //correct
-//                    Intent intent = new Intent(Login.this, MainActivity.class);
-//                    startActivity(intent);
-//                    Toast.makeText(Login.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
-//                }else
-//                    //incorrect
-//                    Toast.makeText(Login.this,"LOGIN FAILED",Toast.LENGTH_SHORT).show();
             }
         });
 
