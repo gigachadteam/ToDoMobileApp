@@ -38,29 +38,31 @@ public class Login extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                db.collection("users")
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        String userName = document.getString("name");
-                                        String userPassword = document.getString("password");
-                                        if (userName != null && userPassword != null && userName.equals(loginUsername.getText().toString()) && userPassword.equals((loginPassword.getText().toString()))) {
-                                            Intent intent = new Intent(Login.this, MainActivity.class);
-                                            startActivity(intent);
-                                            Toast.makeText(Login.this,"LOGIN SUCESSED",Toast.LENGTH_SHORT).show();
-                                        }else{
-                                            Toast.makeText(Login.this,"LOGIN FAILED",Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                } else {
-                                    Toast.makeText(Login.this,"something went wrong",Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+//                FirebaseFirestore db = FirebaseFirestore.getInstance();
+//                db.collection("users")
+//                        .get()
+//                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                                if (task.isSuccessful()) {
+//                                    for (QueryDocumentSnapshot document : task.getResult()) {
+//                                        String userName = document.getString("name");
+//                                        String userPassword = document.getString("password");
+//                                        if (userName != null && userPassword != null && userName.equals(loginUsername.getText().toString()) && userPassword.equals((loginPassword.getText().toString()))) {
+//                                            Intent intent = new Intent(Login.this, MainActivity.class);
+//                                            startActivity(intent);
+//                                            Toast.makeText(Login.this,"LOGIN SUCESSED",Toast.LENGTH_SHORT).show();
+//                                        }else{
+//                                            Toast.makeText(Login.this,"LOGIN FAILED",Toast.LENGTH_SHORT).show();
+//                                        }
+//                                    }
+//                                } else {
+//                                    Toast.makeText(Login.this,"something went wrong",Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        });
+                Intent intent = new Intent(Login.this, Home.class);
+                startActivity(intent);
             }
         });
 
