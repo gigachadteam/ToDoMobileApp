@@ -32,9 +32,9 @@ public class Login extends AppCompatActivity {
             public void onClick(View view) {
                 if(loginUsername.getText().toString().equals("admin")&& loginPassword.getText().toString().equals("admin")){
                     //correct
-                    Toast.makeText(Login.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(Login.this, MainActivity.class);
                     startActivity(intent);
+                    Toast.makeText(Login.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
                 }else
                     //incorrect
                     Toast.makeText(Login.this,"LOGIN FAILED",Toast.LENGTH_SHORT).show();
