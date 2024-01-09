@@ -124,7 +124,7 @@ public class SignUp extends AppCompatActivity {
                                                         @Override
                                                         public void onFailure(@NonNull Exception e) {
 
-                                                            Toast.makeText(getApplicationContext(), "Failuer", Toast.LENGTH_LONG).show();
+                                                            Toast.makeText(getApplicationContext(), "Failure", Toast.LENGTH_LONG).show();
                                                         }
                                                     });
 

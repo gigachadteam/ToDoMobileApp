@@ -25,6 +25,7 @@ public class Login extends AppCompatActivity {
     EditText loginUsername, loginPassword;
     Button loginButton;
     TextView signupRedirect;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,8 +36,8 @@ public class Login extends AppCompatActivity {
         signupRedirect = findViewById(R.id.signupRedirect);
         loginButton = findViewById(R.id.login_button);
 
-
         loginButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -53,13 +54,11 @@ public class Login extends AppCompatActivity {
                                             Intent intent = new Intent(Login.this, MainActivity.class);
                                             intent.putExtra("user_name", loginUsername.getText().toString());
                                             startActivity(intent);
-                                            Toast.makeText(Login.this,"LOGIN SUCESSED",Toast.LENGTH_SHORT).show();
-                                        }else{
-                                            Toast.makeText(Login.this,"LOGIN FAILED",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(Login.this,"LOGIN SUCCESSFUL",Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 } else {
-                                    Toast.makeText(Login.this,"something went wrong",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Login.this,"LOGIN FAILED",Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
