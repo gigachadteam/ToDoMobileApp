@@ -129,6 +129,7 @@ public class SignUp extends AppCompatActivity {
                                                     });
 
                                             Intent intent = new Intent(SignUp.this, MainActivity.class);
+                                            intent.putExtra("user_name", user);
                                             startActivity(intent);
                                         }
                                     }

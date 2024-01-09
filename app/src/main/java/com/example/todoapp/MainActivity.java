@@ -11,22 +11,37 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
     private ArrayAdapter<String> adapter;
     private ArrayList<String> taskList;
+    private String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FirebaseApp.initializeApp(this);
+
+
+        Intent intent = getIntent();
+        if (intent.hasExtra("user_name")) {
+            userName = intent.getStringExtra("user_name");
+        }
+
 
         setContentView(R.layout.activity_main);
 
@@ -49,6 +64,29 @@ public class MainActivity extends AppCompatActivity {
                 // Get the task from the EditText
                 String task = editTextTask.getText().toString().trim();
 
+                // add it to firebase
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                Map<String, Object> taskData = new HashMap<>();
+
+                taskData.put("username", userName);
+                taskData.put("value", task);
+
+                db.collection("tasks")
+                        .add(taskData)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                                Toast.makeText(getApplicationContext(), "Failuer", Toast.LENGTH_LONG).show();
+                            }
+                        });
+
                 // Add the task to the list and update the adapter
                 if (!task.isEmpty()) {
                     taskList.add(task);
@@ -69,14 +107,17 @@ public class MainActivity extends AppCompatActivity {
                 int id = item.getItemId();
                 if(id == R.id.home){
                     Intent intent = new Intent(MainActivity.this, Home.class);
+                    intent.putExtra("user_name", userName);
                     startActivity(intent);
                 }
                 else if (id == R.id.tasks){
                     Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                    intent.putExtra("user_name", userName);
                     startActivity(intent);
                 }
                 else if (id == R.id.profile){
                     Intent intent = new Intent(MainActivity.this, Profile.class);
+                    intent.putExtra("user_name", userName);
                     startActivity(intent);
                 }
 
