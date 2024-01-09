@@ -13,13 +13,17 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,12 +40,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FirebaseApp.initializeApp(this);
 
-
         Intent intent = getIntent();
         if (intent.hasExtra("user_name")) {
             userName = intent.getStringExtra("user_name");
         }
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("tasks").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        String username = document.getString("username");
+                        // Check if the username matches the desired username
+                        if (userName != null && userName.equals(username)) {
+                            taskList.add((String) document.get("value"));
+                            adapter.notifyDataSetChanged();
+                        }
+
+                    }
+                }
+            }
+        });
 
         setContentView(R.layout.activity_main);
 
